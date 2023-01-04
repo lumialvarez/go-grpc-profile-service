@@ -1,7 +1,7 @@
 package postgresql
 
 import (
-	"github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/repository/postgresql/user/dao"
+	"github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/repository/postgresql/profile/dao"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -21,7 +21,7 @@ func Init(url string) Client {
 
 	log.Print("Connected to " + url)
 
-	db.AutoMigrate(dao.User{})
+	db.AutoMigrate(dao.Profile{})
 
 	return Client{db}
 }

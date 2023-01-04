@@ -2,21 +2,28 @@ package devapi
 
 import (
 	"github.com/lumialvarez/go-grpc-profile-service/src/cmd/devapi/config"
-	"github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/handler/grpc/auth/pb"
+	errorGrpc "github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/handler/grpc/error"
+	"github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/handler/grpc/profile"
+	"github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/handler/grpc/profile/pb"
+	repositoryProfile "github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/repository/postgresql/profile"
+	"github.com/lumialvarez/go-grpc-profile-service/src/internal/profile/usecase/list"
+	"github.com/lumialvarez/go-grpc-profile-service/src/internal/profile/usecase/save"
 )
 
 type DependenciesContainer struct {
-	AuthService pb.AuthServiceServer
+	ProfileService pb.ProfileServiceServer
 }
 
 func LoadDependencies(config config.Config) DependenciesContainer {
-	//userRepository := repositoryUser.Init(config)
+	profileRepository := repositoryProfile.Init(config)
 
-	//userCaseRegister := register.NewUseCaseRegisterUser(&userRepository)
+	userCaseSave := save.NewUseCaseSaveProfile(&profileRepository)
+	userCaseList := list.NewUseCaseListProfile(&profileRepository)
+	apiResponseProvider := errorGrpc.NewAPIResponseProvider()
 
-	//s := auth.NewHandler(userCaseRegister, useCaseLogin, useCaseValidate, useCaseList, useCaseUpdate, apiResponseProvider)
+	s := profile.NewHandler(userCaseList, userCaseSave, apiResponseProvider)
 
 	return DependenciesContainer{
-		//AuthService: &s,
+		ProfileService: &s,
 	}
 }

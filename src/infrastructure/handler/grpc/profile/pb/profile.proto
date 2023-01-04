@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package profile;
+
+option go_package = "./src/infrastructure/handler/grpc/profile/pb";
+
+service ProfileService {
+  rpc List(ListRequest) returns (ListResponse) {}
+  rpc Save(SaveRequest) returns (SaveResponse) {}
+}
+
+
+
+// List
+message ListRequest {
+  optional int64  profileId = 1;
+  optional string profileLanguage = 2;
+}
+
+message ListResponse {
+  message Profile {
+    int64       profileId = 1;
+    string      profileLanguage = 2;
+    ProfileData profileData = 3;
+    string      lastUpdate = 4;
+    bool        status = 5;
+  }
+  repeated Profile profile = 1;
+}
+
+// Save
+message SaveRequest {
+  string      profileLanguage = 2;
+  ProfileData profileData = 3;
+}
+
+message SaveResponse {
+  int64       profileId = 1;
+  string      profileLanguage = 2;
+  ProfileData profileData = 3;
+  string      lastUpdate = 4;
+  bool        status = 5;
+}
+
+
+
+message ProfileData {
+  string name = 1;
+  string profession = 2;
+  string professionalProfile = 3;
+  string personalProfile = 4;
+  repeated Project projects = 5;
+  repeated Knowledge knowledges = 6;
+}
+
+message Project {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string detailHtml = 4;
+  string mainImage = 5;
+}
+
+message Knowledge {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  int32 level = 4;
+  string description = 5;
+  repeated string categories = 6;
+}
