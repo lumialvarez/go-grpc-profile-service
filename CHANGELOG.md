@@ -3,6 +3,7 @@ Profile Service
 
 ## [Unreleased]
 
-## [0.0.1] - 04/01/2023
+## [1.0.0] - 04/01/2023
 ### Added
-- Initial project, just for test, DELETE!!
+- Initial project
+- gRPC Methods of list, save and update
