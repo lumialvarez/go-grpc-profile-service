@@ -52,7 +52,7 @@ pipeline {
                 sh 'java ReplaceSecrets.java JWT_SECRET $JWT_SECRET'
                 sh 'cat src/cmd/devapi/config/envs/prod.env'
 
-                sh "docker build . -t lmalvarez/ go-grpc-profile-service:${APP_VERSION}"
+                sh "docker build . -t lmalvarez/go-grpc-profile-service:${APP_VERSION}"
             }
         }
       stage('Deploy') {
@@ -65,20 +65,20 @@ pipeline {
                     ).trim()
                 }
 
-                sh "docker rm -f  go-grpc-profile-service &>/dev/null && echo \'Removed old container\' "
+                sh "docker rm -f go-grpc-profile-service &>/dev/null && echo \'Removed old container\' "
 
                 sh "sleep 5s"
 
-            sh "docker run --name  go-grpc-profile-service --net=backend-services --add-host=lmalvarez.com:${INTERNAL_IP} -p 50052:50052 -e SCOPE='prod' -d --restart unless-stopped lmalvarez/ go-grpc-profile-service:${APP_VERSION}"
+            sh "docker run --name go-grpc-profile-service --net=backend-services --add-host=lmalvarez.com:${INTERNAL_IP} -p 50052:50052 -e SCOPE='prod' -d --restart unless-stopped lmalvarez/go-grpc-profile-service:${APP_VERSION}"
          }
       }
       stage('GIT tag') {
           steps {
-              git branch: 'main', credentialsId: 'git-token-lumi', url: 'https://github.com/lumialvarez/ go-grpc-profile-service.git'
+              git branch: 'main', credentialsId: 'git-token-lumi', url: 'https://github.com/lumialvarez/go-grpc-profile-service.git'
 
               withCredentials([usernamePassword(credentialsId: 'git-token-lumi', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                   sh "git config credential.username $USERNAME"
-                  sh "git remote set-url --push origin https://$PASSWORD@github.com/lumialvarez/ go-grpc-profile-service.git"
+                  sh "git remote set-url --push origin https://$PASSWORD@github.com/lumialvarez/go-grpc-profile-service.git"
                   sh "git tag v" + APP_VERSION + "  HEAD"
                   sh "git push origin --tags"
               }
@@ -88,7 +88,7 @@ pipeline {
             steps {
                 sh '''echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin '''
 
-                sh "docker push lmalvarez/ go-grpc-profile-service:${APP_VERSION}"
+                sh "docker push lmalvarez/go-grpc-profile-service:${APP_VERSION}"
             }
         }
    }
