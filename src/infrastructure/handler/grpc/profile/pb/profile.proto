@@ -7,9 +7,16 @@ option go_package = "./src/infrastructure/handler/grpc/profile/pb";
 service ProfileService {
   rpc List(ListRequest) returns (ListResponse) {}
   rpc Save(SaveRequest) returns (SaveResponse) {}
+  rpc Update(UpdateRequest) returns (UpdateResponse) {}
 }
 
-
+message Profile {
+  int64       profileId = 1;
+  string      profileLanguage = 2;
+  ProfileData profileData = 3;
+  string      lastUpdate = 4;
+  bool        status = 5;
+}
 
 // List
 message ListRequest {
@@ -18,14 +25,7 @@ message ListRequest {
 }
 
 message ListResponse {
-  message Profile {
-    int64       profileId = 1;
-    string      profileLanguage = 2;
-    ProfileData profileData = 3;
-    string      lastUpdate = 4;
-    bool        status = 5;
-  }
-  repeated Profile profile = 1;
+  repeated Profile profiles = 1;
 }
 
 // Save
@@ -42,7 +42,16 @@ message SaveResponse {
   bool        status = 5;
 }
 
+// Update
+message UpdateRequest {
+  Profile profile = 1;
+}
 
+message UpdateResponse {
+  Profile profile = 1;
+}
+
+//--------
 
 message ProfileData {
   string name = 1;

@@ -8,6 +8,7 @@ import (
 	repositoryProfile "github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/repository/postgresql/profile"
 	"github.com/lumialvarez/go-grpc-profile-service/src/internal/profile/usecase/list"
 	"github.com/lumialvarez/go-grpc-profile-service/src/internal/profile/usecase/save"
+	"github.com/lumialvarez/go-grpc-profile-service/src/internal/profile/usecase/update"
 )
 
 type DependenciesContainer struct {
@@ -17,11 +18,12 @@ type DependenciesContainer struct {
 func LoadDependencies(config config.Config) DependenciesContainer {
 	profileRepository := repositoryProfile.Init(config)
 
-	userCaseSave := save.NewUseCaseSaveProfile(&profileRepository)
-	userCaseList := list.NewUseCaseListProfile(&profileRepository)
+	useCaseSave := save.NewUseCaseSaveProfile(&profileRepository)
+	useCaseList := list.NewUseCaseListProfile(&profileRepository)
+	useCaseUpdate := update.NewUseCaseUpdateProfile(&profileRepository)
 	apiResponseProvider := errorGrpc.NewAPIResponseProvider()
 
-	s := profile.NewHandler(userCaseList, userCaseSave, apiResponseProvider)
+	s := profile.NewHandler(useCaseList, useCaseSave, useCaseUpdate, apiResponseProvider)
 
 	return DependenciesContainer{
 		ProfileService: &s,

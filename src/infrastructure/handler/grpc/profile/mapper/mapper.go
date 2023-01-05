@@ -10,13 +10,13 @@ type Mapper struct {
 }
 
 func (m Mapper) ToDTOListResponse(domainProfiles []*profile.Profile) *pb.ListResponse {
-	var dtoProfiles []*pb.ListResponse_Profile
+	var dtoProfiles []*pb.Profile
 	for _, domainProfile := range domainProfiles {
 		domainProfileData := domainProfile.Data()
 
 		dtoProfileData := toDtoProfileData(domainProfileData)
 
-		dtoProfile := &pb.ListResponse_Profile{
+		dtoProfile := &pb.Profile{
 			ProfileId:       domainProfile.Id(),
 			ProfileLanguage: domainProfile.Language(),
 			ProfileData:     dtoProfileData,
@@ -26,7 +26,7 @@ func (m Mapper) ToDTOListResponse(domainProfiles []*profile.Profile) *pb.ListRes
 		dtoProfiles = append(dtoProfiles, dtoProfile)
 	}
 
-	return &pb.ListResponse{Profile: dtoProfiles}
+	return &pb.ListResponse{Profiles: dtoProfiles}
 }
 
 func (m Mapper) ToDomainSaveRequest(registerReq *pb.SaveRequest) *profile.Profile {
@@ -53,6 +53,33 @@ func (m Mapper) ToDTOSaveResponse(domainProfile *profile.Profile) *pb.SaveRespon
 	}
 
 	return &dtoProfile
+}
+
+func (m Mapper) ToDomainUpdateRequest(request *pb.UpdateRequest) *profile.Profile {
+	profileReq := request.Profile
+	dtoProfileData := profileReq.GetProfileData()
+
+	domainProfileData := toDomainProfileData(dtoProfileData)
+
+	domainProfile := profile.NewProfile(profileReq.ProfileId, profileReq.ProfileLanguage, domainProfileData, time.Now(), profileReq.Status)
+
+	return domainProfile
+}
+
+func (m Mapper) ToDTOUpdateResponse(domainProfile *profile.Profile) *pb.UpdateResponse {
+	domainProfileData := domainProfile.Data()
+
+	dtoProfileData := toDtoProfileData(domainProfileData)
+
+	dtoProfile := &pb.Profile{
+		ProfileId:       domainProfile.Id(),
+		ProfileLanguage: domainProfile.Language(),
+		ProfileData:     dtoProfileData,
+		LastUpdate:      domainProfile.LastUpdate().Format(time.ANSIC),
+		Status:          domainProfile.Status(),
+	}
+
+	return &pb.UpdateResponse{Profile: dtoProfile}
 }
 
 func toDomainProfileData(dtoProfileData *pb.ProfileData) profile.Data {

@@ -1,4 +1,4 @@
-package save
+package update
 
 import (
 	"context"
@@ -7,7 +7,8 @@ import (
 )
 
 type Repository interface {
-	Save(user *profile.Profile) (*profile.Profile, error)
+	Update(user *profile.Profile) (*profile.Profile, error)
+	GetById(id int64) (*profile.Profile, error)
 	GetByLanguage(language string) (*profile.Profile, error)
 }
 
@@ -15,17 +16,20 @@ type UseCaseSaveProfile struct {
 	repository Repository
 }
 
-func NewUseCaseSaveProfile(repository Repository) UseCaseSaveProfile {
+func NewUseCaseUpdateProfile(repository Repository) UseCaseSaveProfile {
 	return UseCaseSaveProfile{repository: repository}
 }
 
 func (uc UseCaseSaveProfile) Execute(ctx context.Context, domainProfile *profile.Profile) (*profile.Profile, error) {
-	_, err := uc.repository.GetByLanguage(domainProfile.Language())
-	if err == nil {
-		return nil, domainError.NewAlreadyExists("Language already exists")
+	dbProfile, err := uc.repository.GetById(domainProfile.Id())
+	if err != nil {
+		return nil, domainError.NewNotFound("Profile no exists")
+	}
+	if domainProfile.Language() != dbProfile.Language() {
+		return nil, domainError.NewNotFound("Invalid Language")
 	}
 
-	createdProfile, err := uc.repository.Save(domainProfile)
+	createdProfile, err := uc.repository.Update(domainProfile)
 	if err != nil {
 		return nil, err
 	}

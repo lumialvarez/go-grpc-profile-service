@@ -57,6 +57,26 @@ func (repository *Repository) Save(domainProfile *profile.Profile) (*profile.Pro
 	return savedDomainProfile, nil
 }
 
+func (repository *Repository) Update(domainProfile *profile.Profile) (*profile.Profile, error) {
+	daoProfile, err := repository.mapper.ToDAO(domainProfile)
+	if err != nil {
+		return nil, err
+	}
+
+	updateProfile := make(map[string]interface{})
+	updateProfile["data"] = daoProfile.Data
+	updateProfile["last_update"] = daoProfile.LastUpdate
+	updateProfile["status"] = daoProfile.Status
+
+	result := repository.postgresql.DB.Model(&daoProfile).Updates(updateProfile)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	savedDomainProfile, _ := repository.mapper.ToDomain(daoProfile)
+
+	return savedDomainProfile, nil
+}
+
 func (repository *Repository) GetAll() ([]*profile.Profile, error) {
 	var daoProfiles []dao.Profile
 	result := repository.postgresql.DB.Find(&daoProfiles)
