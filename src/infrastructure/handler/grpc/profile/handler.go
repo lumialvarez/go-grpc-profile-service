@@ -35,6 +35,7 @@ type Handler struct {
 func NewHandler(useCaseList UseCaseList, useCaseSave UseCaseSave, useCaseUpdate UseCaseUpdate, apiResponseProvider ApiResponseProvider) Handler {
 	return Handler{useCaseList: useCaseList, useCaseSave: useCaseSave, useCaseUpdate: useCaseUpdate, apiResponseProvider: apiResponseProvider}
 }
+
 func (h *Handler) List(ctx context.Context, request *pb.ListRequest) (*pb.ListResponse, error) {
 	domainProfiles, err := h.useCaseList.Execute(ctx, request.GetProfileId(), request.GetProfileLanguage())
 	if err != nil {
