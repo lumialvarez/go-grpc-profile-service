@@ -69,6 +69,7 @@ type Project struct {
 	Description string
 	DetailHtml  string
 	MainImage   string
+	Order       int32
 }
 
 type Knowledge struct {

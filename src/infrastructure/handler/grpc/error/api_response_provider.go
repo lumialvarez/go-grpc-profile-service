@@ -21,6 +21,8 @@ func (a *APIResponseProvider) ToAPIResponse(err error) error {
 		return status.Error(codes.AlreadyExists, err.Error())
 	case domainError.NotFound:
 		return status.Error(codes.NotFound, err.Error())
+	case domainError.InvalidData:
+		return status.Error(codes.InvalidArgument, err.Error())
 	default:
 		return status.Error(codes.Unknown, err.Error())
 	}

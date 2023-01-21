@@ -94,6 +94,7 @@ func toDomainProfileData(dtoProfileData *pb.ProfileData) profile.Data {
 			Description: dtoProject.Description,
 			DetailHtml:  dtoProject.DetailHtml,
 			MainImage:   dtoProject.MainImage,
+			Order:       dtoProject.Order,
 		}
 		domainProjects = append(domainProjects, domainProject)
 	}
@@ -134,6 +135,7 @@ func toDtoProfileData(domainProfileData profile.Data) *pb.ProfileData {
 			Description: domainProject.Description,
 			DetailHtml:  domainProject.DetailHtml,
 			MainImage:   domainProject.MainImage,
+			Order:       domainProject.Order,
 		}
 		dtoProjects = append(dtoProjects, dtoProject)
 	}

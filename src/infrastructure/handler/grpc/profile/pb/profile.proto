@@ -68,6 +68,7 @@ message Project {
   string description = 3;
   string detailHtml = 4;
   string mainImage = 5;
+  int32  order = 6;
 }
 
 message Knowledge {
