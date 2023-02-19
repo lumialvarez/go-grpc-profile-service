@@ -24,10 +24,7 @@ func Start() {
 		log.Fatalln("Failed to listing:", err)
 	}
 
-	fmt.Println("Auth Svc on", appConfig.Port)
-
-	/*validate.NewUseCaseValidateUser(userRepository, &serviceJwtUser.Service{})
-	s := auth.NewHandler()*/
+	fmt.Println("Profile Svc on", appConfig.Port)
 
 	grpcServer := grpc.NewServer()
 

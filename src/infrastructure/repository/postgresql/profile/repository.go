@@ -1,8 +1,8 @@
 package repositoryProfile
 
 import (
+	"github.com/lumialvarez/go-common-tools/platform/postgresql"
 	"github.com/lumialvarez/go-grpc-profile-service/src/cmd/devapi/config"
-	"github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/platform/postgresql"
 	"github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/repository/postgresql/profile/dao"
 	"github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/repository/postgresql/profile/mapper"
 	"github.com/lumialvarez/go-grpc-profile-service/src/internal/profile"
@@ -14,7 +14,9 @@ type Repository struct {
 }
 
 func Init(config config.Config) Repository {
-	return Repository{postgresql: postgresql.Init(config.DBUrl), mapper: mapper.Mapper{}}
+	postgresqlClient := postgresql.Init(config.DBUrl)
+	postgresqlClient.DB.AutoMigrate(dao.Profile{})
+	return Repository{postgresql: postgresqlClient, mapper: mapper.Mapper{}}
 }
 
 func (repository *Repository) GetById(id int64) (*profile.Profile, error) {
