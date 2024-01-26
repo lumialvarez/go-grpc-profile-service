@@ -3,6 +3,10 @@ Profile Service
 
 ## [Unreleased]
 
+## [1.1.1] - 24/01/2024
+### Fixed
+- Add Github Action for pull request and create test
+
 ## [1.1.0] - 18/02/2023
 ### Added
 - Order field in projects
