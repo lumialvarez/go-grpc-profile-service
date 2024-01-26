@@ -1,7 +1,6 @@
 package repositoryProfile
 
 import (
-	"fmt"
 	"github.com/lumialvarez/go-common-tools/platform/postgresql"
 	"github.com/lumialvarez/go-grpc-profile-service/src/cmd/devapi/config"
 	"github.com/lumialvarez/go-grpc-profile-service/src/infrastructure/repository/postgresql/profile/dao"
@@ -15,8 +14,7 @@ type Repository struct {
 }
 
 func Init(config config.Config) Repository {
-	urlDataConnection := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", config.DBUser, config.DBPassword, config.DBUrl, config.DBPort, config.DBName)
-	postgresqlClient := postgresql.Init(urlDataConnection)
+	postgresqlClient := postgresql.Init(config.DBUrl)
 	postgresqlClient.DB.AutoMigrate(dao.Profile{})
 	return Repository{postgresql: postgresqlClient, mapper: mapper.Mapper{}}
 }
